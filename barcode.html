@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Code128 바-코시 생성기</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f3f3f3;
+    font-family: Arial, "Noto Sans KR", sans-serif;
+    color: #333;
+}
+
+.container {
+    width: 940px;
+    max-width: calc(100% - 20px);
+    margin: 20px auto 40px;
+}
+
+
+/* =========================================
+   상단
+========================================= */
+
+.top-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 14px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.global-buttons {
+    display: flex;
+    gap: 7px;
+}
+
+.global-buttons button {
+    min-width: 130px;
+}
+
+
+/* =========================================
+   바코드 모듈
+========================================= */
+
+.barcode-module {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+}
+
+.module-number {
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #666;
+}
+
+.barcode-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 17px;
+    outline: none;
+}
+
+.barcode-input:focus {
+    border-color: #666;
+}
+
+.module-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 18px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+
+/* =========================================
+   미리보기
+========================================= */
+
+.preview {
+    min-height: 125px;
+    padding: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: auto;
+}
+
+.preview svg {
+    display: block;
+    background: white;
+    flex-shrink: 0;
+}
+
+.empty {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.error {
+    color: #c62828;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   컨트롤
+========================================= */
+
+.control-panel {
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    gap: 6px;
+}
+
+button {
+    flex: 1;
+    min-width: 0;
+
+    padding: 8px 8px;
+
+    border: 1px solid #aaa;
+    border-radius: 4px;
+
+    background: white;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: #eee;
+}
+
+button:active:not(:disabled) {
+    background: #ddd;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+
+/* =========================================
+   슬라이더
+========================================= */
+
+.scale-group {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}
+
+.scale-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 4px;
+
+    font-size: 12px;
+}
+
+.scale-value {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.size-slider {
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.range-labels {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 0;
+
+    color: #999;
+    font-size: 9px;
+}
+
+.status {
+    min-height: 15px;
+    margin-top: 6px;
+
+    text-align: center;
+
+    font-size: 11px;
+    color: #555;
+}
+
+
+/* =========================================
+   전체 작업 상태
+========================================= */
+
+#globalStatus {
+    min-height: 18px;
+    margin-bottom: 8px;
+
+    text-align: right;
+
+    font-size: 12px;
+    color: #555;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="top-area">
+
+        <h1>Code128 바코드 생성기</h1>
+
+        <div class="global-buttons">
+
+            <button
+                id="copyAllButton"
+                disabled>
+                전체 이미지 복사
+            </button>
+
+            <button
+                id="printAllButton"
+                disabled>
+                전체 인쇄
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="globalStatus"></div>
+
+    <div id="modules"></div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   Code128 패턴
+========================================================= */
+
+const CODE128_PATTERNS = [
+
+"212222","222122","222221","121223","121322","131222",
+"122213","122312","132212","221213","221312","231212",
+"112232","122132","122231","113222","123122","123221",
+"223211","221132","221231","213212","223112","312131",
+"311222","321122","321221","312212","322112","322211",
+"212123","212321","232121","111323","131123","131321",
+"112313","132113","132311","211313","231113","231311",
+"112133","112331","132131","113123","113321","133121",
+"313121","211331","231131","213113","213311","213131",
+"311123","311321","331121","312113","312311","332111",
+"314111","221411","431111","111224","111422","121124",
+"121421","141122","141221","112214","112412","122114",
+"122411","142112","142211","241211","221114","413111",
+"241112","134111","111242","121142","121241","114212",
+"124112","124211","411212","421112","421211","212141",
+"214121","412121","111143","111341","131141","114113",
+"114311","411113","411311","113141","114131","311141",
+"411131","211412","211214","211232","2331112"
+
+];
+
+
+/* =========================================================
+   Code128-B
+========================================================= */
+
+function encodeCode128B(text) {
+
+    const START_B = 104;
+    const STOP = 106;
+
+    const values = [];
+
+
+    for (let i = 0; i < text.length; i++) {
+
+        const ascii =
+            text.charCodeAt(i);
+
+
+        if (
+            ascii < 32 ||
+            ascii > 126
+        ) {
+
+            throw new Error(
+                "영문, 숫자 및 일반 특수문자만 사용할 수 있습니다."
+            );
+
+        }
+
+
+        values.push(
+            ascii - 32
+        );
+
+    }
+
+
+    let checksum =
+        START_B;
+
+
+    for (
+        let i = 0;
+        i < values.length;
+        i++
+    ) {
+
+        checksum +=
+            values[i] *
+            (i + 1);
+
+    }
+
+
+    checksum %= 103;
+
+
+    return [
+
+        START_B,
+
+        ...values,
+
+        checksum,
+
+        STOP
+
+    ];
+
+}
+
+
+/* =========================================================
+   한글 오입력 -> 영문
+========================================================= */
+
+const CHO_KEYS = [
+    "r","R","s","e","E","f","a","q","Q",
+    "t","T","d","w","W","c","z","x","v","g"
+];
+
+const JUNG_KEYS = [
+    "k","o","i","O","j","p","u","P",
+    "h","hk","ho","hl","y",
+    "n","nj","np","nl","b","m","ml","l"
+];
+
+const JONG_KEYS = [
+    "",
+    "r","R","rt","s","sw","sg","e",
+    "f","fr","fa","fq","ft","fx","fv","fg",
+    "a","q","qt","t","T","d","w","c",
+    "z","x","v","g"
+];
+
+const JAMO_KEYS = {
+
+    "ㄱ":"r",
+    "ㄲ":"R",
+    "ㄳ":"rt",
+
+    "ㄴ":"s",
+    "ㄵ":"sw",
+    "ㄶ":"sg",
+
+    "ㄷ":"e",
+    "ㄸ":"E",
+
+    "ㄹ":"f",
+    "ㄺ":"fr",
+    "ㄻ":"fa",
+    "ㄼ":"fq",
+    "ㄽ":"ft",
+    "ㄾ":"fx",
+    "ㄿ":"fv",
+    "ㅀ":"fg",
+
+    "ㅁ":"a",
+
+    "ㅂ":"q",
+    "ㅃ":"Q",
+    "ㅄ":"qt",
+
+    "ㅅ":"t",
+    "ㅆ":"T",
+
+    "ㅇ":"d",
+
+    "ㅈ":"w",
+    "ㅉ":"W",
+
+    "ㅊ":"c",
+    "ㅋ":"z",
+    "ㅌ":"x",
+    "ㅍ":"v",
+    "ㅎ":"g",
+
+    "ㅏ":"k",
+    "ㅐ":"o",
+    "ㅑ":"i",
+    "ㅒ":"O",
+
+    "ㅓ":"j",
+    "ㅔ":"p",
+    "ㅕ":"u",
+    "ㅖ":"P",
+
+    "ㅗ":"h",
+    "ㅘ":"hk",
+    "ㅙ":"ho",
+    "ㅚ":"hl",
+    "ㅛ":"y",
+
+    "ㅜ":"n",
+    "ㅝ":"nj",
+    "ㅞ":"np",
+    "ㅟ":"nl",
+    "ㅠ":"b",
+
+    "ㅡ":"m",
+    "ㅢ":"ml",
+
+    "ㅣ":"l"
+
+};
+
+
+function koreanToEnglishKeys(char) {
+
+    const code =
+        char.charCodeAt(0);
+
+
+    if (
+        code >= 0xAC00 &&
+        code <= 0xD7A3
+    ) {
+
+        const syllable =
+            code - 0xAC00;
+
+
+        const cho =
+            Math.floor(
+                syllable / 588
+            );
+
+
+        const jung =
+            Math.floor(
+                (syllable % 588) / 28
+            );
+
+
+        const jong =
+            syllable % 28;
+
+
+        return (
+
+            CHO_KEYS[cho] +
+
+            JUNG_KEYS[jung] +
+
+            JONG_KEYS[jong]
+
+        );
+
+    }
+
+
+    if (
+        Object.prototype
+            .hasOwnProperty
+            .call(
+                JAMO_KEYS,
+                char
+            )
+    ) {
+
+        return JAMO_KEYS[char];
+
+    }
+
+
+    return char;
+
+}
+
+
+function normalizeBarcodeText(text) {
+
+    let result = "";
+
+
+    for (const char of text) {
+
+        if (
+            /[a-zA-Z]/.test(char)
+        ) {
+
+            result +=
+                char.toUpperCase();
+
+            continue;
+
+        }
+
+
+        const converted =
+            koreanToEnglishKeys(
+                char
+            );
+
+
+        result +=
+            converted.toUpperCase();
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   전체 모듈 컨트롤러 저장
+========================================================= */
+
+const barcodeControllers = [];
+
+
+const copyAllButton =
+    document.getElementById(
+        "copyAllButton"
+    );
+
+
+const printAllButton =
+    document.getElementById(
+        "printAllButton"
+    );
+
+
+const globalStatus =
+    document.getElementById(
+        "globalStatus"
+    );
+
+
+function getActiveControllers() {
+
+    return barcodeControllers.filter(
+        controller =>
+            controller.hasValue()
+    );
+
+}
+
+
+function updateGlobalButtons() {
+
+    const count =
+        getActiveControllers().length;
+
+
+    copyAllButton.disabled =
+        count === 0;
+
+
+    printAllButton.disabled =
+        count === 0;
+
+
+    if (count === 0) {
+
+        globalStatus.textContent =
+            "";
+
+    }
+
+}
+
+
+/* =========================================================
+   모듈 생성
+========================================================= */
+
+function createBarcodeModule(number) {
+
+    const module =
+        document.createElement(
+            "div"
+        );
+
+
+    module.className =
+        "barcode-module";
+
+
+    module.innerHTML = `
+
+        <div class="module-number">
+            바코드 ${number}
+        </div>
+
+        <input
+            class="barcode-input"
+            type="text"
+            placeholder="바코드 값을 입력하세요"
+            autocomplete="off"
+        >
+
+
+        <div class="module-body">
+
+
+            <div class="preview">
+
+                <div class="empty">
+                    바코드 값을 입력하세요.
+                </div>
+
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    style="display:none">
+                </svg>
+
+                <div
+                    class="error"
+                    style="display:none">
+                </div>
+
+            </div>
+
+
+            <div class="control-panel">
+
+
+                <div class="buttons">
+
+                    <button
+                        class="copy-button"
+                        disabled>
+                        이미지 복사
+                    </button>
+
+                    <button
+                        class="print-button"
+                        disabled>
+                        바로 인쇄
+                    </button>
+
+                </div>
+
+
+                <div class="scale-group">
+
+                    <div class="scale-title">
+
+                        <span>
+                            인쇄 크기
+                        </span>
+
+                        <span
+                            class="print-scale-value scale-value">
+                            100%
+                        </span>
+
+                    </div>
+
+
+                    <input
+                        class="print-size-slider size-slider"
+                        type="range"
+                        min="10"
+                        max="150"
+                        step="5"
+                        value="100"
+                    >
+
+
+                    <div class="range-labels">
+
+                        <span>10%</span>
+
+                        <span>100%</span>
+
+                        <span>150%</span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="scale-group">
+
+                    <div class="scale-title">
+
+                        <span>
+                            이미지 복사 크기
+                        </span>
+
+                        <span
+                            class="copy-scale-value scale-value">
+                            100%
+                        </span>
+
+                    </div>
+
+
+                    <input
+                        class="copy-size-slider size-slider"
+                        type="range"
+                        min="10"
+                        max="150"
+                        step="5"
+                        value="100"
+                    >
+
+
+                    <div class="range-labels">
+
+                        <span>10%</span>
+
+                        <span>100%</span>
+
+                        <span>150%</span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="status"></div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    const input =
+        module.querySelector(
+            ".barcode-input"
+        );
+
+
+    const svg =
+        module.querySelector(
+            "svg"
+        );
+
+
+    const empty =
+        module.querySelector(
+            ".empty"
+        );
+
+
+    const error =
+        module.querySelector(
+            ".error"
+        );
+
+
+    const copyButton =
+        module.querySelector(
+            ".copy-button"
+        );
+
+
+    const printButton =
+        module.querySelector(
+            ".print-button"
+        );
+
+
+    const printSlider =
+        module.querySelector(
+            ".print-size-slider"
+        );
+
+
+    const copySlider =
+        module.querySelector(
+            ".copy-size-slider"
+        );
+
+
+    const printScaleValue =
+        module.querySelector(
+            ".print-scale-value"
+        );
+
+
+    const copyScaleValue =
+        module.querySelector(
+            ".copy-scale-value"
+        );
+
+
+    const status =
+        module.querySelector(
+            ".status"
+        );
+
+
+    let printScale = 1;
+
+    let copyScale = 1;
+
+    let originalWidth = 0;
+
+    let originalHeight = 0;
+
+    let isComposing = false;
+
+
+    /* =====================================================
+       화면 미리보기
+       인쇄 크기 기준
+    ===================================================== */
+
+    function applyPreviewScale() {
+
+        if (
+            originalWidth === 0 ||
+            originalHeight === 0
+        ) {
+
+            return;
+
+        }
+
+
+        svg.style.width =
+            (
+                originalWidth *
+                printScale
+            ) + "px";
+
+
+        svg.style.height =
+            (
+                originalHeight *
+                printScale
+            ) + "px";
+
+    }
+
+
+    /* =====================================================
+       바코드 생성
+    ===================================================== */
+
+    function drawBarcode(text) {
+
+        svg.innerHTML = "";
+
+
+        const values =
+            encodeCode128B(
+                text
+            );
+
+
+        const moduleWidth = 2;
+
+        const barHeight = 100;
+
+        const textAreaHeight = 38;
+
+        const quietZone = 10;
+
+
+        let x =
+            quietZone *
+            moduleWidth;
+
+
+        const namespace =
+            "http://www.w3.org/2000/svg";
+
+
+        for (
+            const value
+            of values
+        ) {
+
+            const pattern =
+                CODE128_PATTERNS[value];
+
+
+            let isBar =
+                true;
+
+
+            for (
+                const widthChar
+                of pattern
+            ) {
+
+                const width =
+                    parseInt(
+                        widthChar
+                    ) *
+                    moduleWidth;
+
+
+                if (isBar) {
+
+                    const rect =
+                        document.createElementNS(
+                            namespace,
+                            "rect"
+                        );
+
+
+                    rect.setAttribute(
+                        "x",
+                        x
+                    );
+
+
+                    rect.setAttribute(
+                        "y",
+                        0
+                    );
+
+
+                    rect.setAttribute(
+                        "width",
+                        width
+                    );
+
+
+                    rect.setAttribute(
+                        "height",
+                        barHeight
+                    );
+
+
+                    rect.setAttribute(
+                        "fill",
+                        "black"
+                    );
+
+
+                    svg.appendChild(
+                        rect
+                    );
+
+                }
+
+
+                x += width;
+
+                isBar =
+                    !isBar;
+
+            }
+
+        }
+
+
+        x +=
+            quietZone *
+            moduleWidth;
+
+
+        const textElement =
+            document.createElementNS(
+                namespace,
+                "text"
+            );
+
+
+        textElement.setAttribute(
+            "x",
+            x / 2
+        );
+
+
+        textElement.setAttribute(
+            "y",
+            barHeight + 27
+        );
+
+
+        textElement.setAttribute(
+            "text-anchor",
+            "middle"
+        );
+
+
+        textElement.setAttribute(
+            "font-family",
+            "Arial, sans-serif"
+        );
+
+
+        textElement.setAttribute(
+            "font-size",
+            "18"
+        );
+
+
+        textElement.setAttribute(
+            "fill",
+            "black"
+        );
+
+
+        textElement.textContent =
+            text;
+
+
+        svg.appendChild(
+            textElement
+        );
+
+
+        originalWidth =
+            x;
+
+
+        originalHeight =
+            barHeight +
+            textAreaHeight;
+
+
+        svg.setAttribute(
+            "viewBox",
+            `0 0 ${originalWidth} ${originalHeight}`
+        );
+
+
+        applyPreviewScale();
+
+    }
+
+
+    /* =====================================================
+       SVG 문자열
+    ===================================================== */
+
+    function getSvgString() {
+
+        const clone =
+            svg.cloneNode(
+                true
+            );
+
+
+        clone.removeAttribute(
+            "style"
+        );
+
+
+        clone.setAttribute(
+            "width",
+            originalWidth
+        );
+
+
+        clone.setAttribute(
+            "height",
+            originalHeight
+        );
+
+
+        clone.setAttribute(
+            "viewBox",
+            `0 0 ${originalWidth} ${originalHeight}`
+        );
+
+
+        clone.setAttribute(
+            "xmlns",
+            "http://www.w3.org/2000/svg"
+        );
+
+
+        return new XMLSerializer()
+            .serializeToString(
+                clone
+            );
+
+    }
+
+
+    /* =====================================================
+       이미지 Canvas
+    ===================================================== */
+
+    async function createCanvas(
+        scale = copyScale
+    ) {
+
+        const svgString =
+            getSvgString();
+
+
+        const blob =
+            new Blob(
+                [svgString],
+                {
+                    type:
+                        "image/svg+xml;charset=utf-8"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const img =
+            new Image();
+
+
+        await new Promise(
+            (
+                resolve,
+                reject
+            ) => {
+
+                img.onload =
+                    resolve;
+
+                img.onerror =
+                    reject;
+
+                img.src =
+                    url;
+
+            }
+        );
+
+
+        const scaledWidth =
+            originalWidth *
+            scale;
+
+
+        const scaledHeight =
+            originalHeight *
+            scale;
+
+
+        /*
+           복사 품질 확보용
+        */
+
+        const resolutionScale =
+            3;
+
+
+        const canvas =
+            document.createElement(
+                "canvas"
+            );
+
+
+        canvas.width =
+            Math.max(
+                1,
+                Math.round(
+                    scaledWidth *
+                    resolutionScale
+                )
+            );
+
+
+        canvas.height =
+            Math.max(
+                1,
+                Math.round(
+                    scaledHeight *
+                    resolutionScale
+                )
+            );
+
+
+        const ctx =
+            canvas.getContext(
+                "2d"
+            );
+
+
+        ctx.fillStyle =
+            "white";
+
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        ctx.drawImage(
+            img,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
+
+        return canvas;
+
+    }
+
+
+    /* =====================================================
+       입력 렌더
+    ===================================================== */
+
+    function renderFromCurrentInput() {
+
+        const value =
+            input.value.trim();
+
+
+        status.textContent =
+            "";
+
+
+        error.style.display =
+            "none";
+
+
+        if (
+            value.length === 0
+        ) {
+
+            svg.style.display =
+                "none";
+
+
+            empty.style.display =
+                "block";
+
+
+            copyButton.disabled =
+                true;
+
+
+            printButton.disabled =
+                true;
+
+
+            updateGlobalButtons();
+
+            return;
+
+        }
+
+
+        try {
+
+            drawBarcode(
+                value
+            );
+
+
+            svg.style.display =
+                "block";
+
+
+            empty.style.display =
+                "none";
+
+
+            copyButton.disabled =
+                false;
+
+
+            printButton.disabled =
+                false;
+
+
+        }
+
+        catch (err) {
+
+            svg.style.display =
+                "none";
+
+
+            empty.style.display =
+                "none";
+
+
+            error.textContent =
+                err.message;
+
+
+            error.style.display =
+                "block";
+
+
+            copyButton.disabled =
+                true;
+
+
+            printButton.disabled =
+                true;
+
+        }
+
+
+        updateGlobalButtons();
+
+    }
+
+
+    function normalizeAndUpdate() {
+
+        const normalized =
+            normalizeBarcodeText(
+                input.value
+            );
+
+
+        if (
+            input.value !==
+            normalized
+        ) {
+
+            input.value =
+                normalized;
+
+        }
+
+
+        renderFromCurrentInput();
+
+    }
+
+
+    input.addEventListener(
+        "compositionstart",
+        function () {
+
+            isComposing =
+                true;
+
+        }
+    );
+
+
+    input.addEventListener(
+        "compositionend",
+        function () {
+
+            isComposing =
+                false;
+
+
+            normalizeAndUpdate();
+
+        }
+    );
+
+
+    input.addEventListener(
+        "input",
+        function (event) {
+
+            if (
+                isComposing ||
+                event.isComposing
+            ) {
+
+                return;
+
+            }
+
+
+            normalizeAndUpdate();
+
+        }
+    );
+
+
+    /* =====================================================
+       인쇄 크기
+    ===================================================== */
+
+    printSlider.addEventListener(
+        "input",
+        function () {
+
+            const percent =
+                Number(
+                    printSlider.value
+                );
+
+
+            printScale =
+                percent / 100;
+
+
+            printScaleValue.textContent =
+                percent + "%";
+
+
+            applyPreviewScale();
+
+        }
+    );
+
+
+    /* =====================================================
+       이미지 크기
+    ===================================================== */
+
+    copySlider.addEventListener(
+        "input",
+        function () {
+
+            const percent =
+                Number(
+                    copySlider.value
+                );
+
+
+            copyScale =
+                percent / 100;
+
+
+            copyScaleValue.textContent =
+                percent + "%";
+
+        }
+    );
+
+
+    /* =====================================================
+       개별 이미지 복사
+    ===================================================== */
+
+    copyButton.addEventListener(
+        "click",
+        async function () {
+
+            try {
+
+                status.textContent =
+                    "이미지 복사 중...";
+
+
+                const canvas =
+                    await createCanvas();
+
+
+                const pngBlob =
+                    await new Promise(
+                        resolve => {
+
+                            canvas.toBlob(
+                                resolve,
+                                "image/png"
+                            );
+
+                        }
+                    );
+
+
+                await navigator
+                    .clipboard
+                    .write([
+
+                        new ClipboardItem({
+
+                            "image/png":
+                                pngBlob
+
+                        })
+
+                    ]);
+
+
+                status.textContent =
+                    `복사 완료 (${copySlider.value}%)`;
+
+
+            }
+
+            catch (err) {
+
+                console.error(
+                    err
+                );
+
+
+                status.textContent =
+                    "이미지 복사가 차단되었습니다.";
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       개별 인쇄
+    ===================================================== */
+
+    printButton.addEventListener(
+        "click",
+        function () {
+
+            printSingle();
+
+        }
+    );
+
+
+    function printSingle() {
+
+        const svgString =
+            getSvgString();
+
+
+        const printWidth =
+            originalWidth *
+            printScale;
+
+
+        const printHeight =
+            originalHeight *
+            printScale;
+
+
+        openPrintWindow([
+
+            {
+                svgString,
+                width:
+                    printWidth,
+                height:
+                    printHeight
+            }
+
+        ]);
+
+    }
+
+
+    /* =====================================================
+       외부에서 사용할 API
+    ===================================================== */
+
+    const controller = {
+
+        hasValue() {
+
+            return (
+                input.value
+                    .trim()
+                    .length > 0
+            );
+
+        },
+
+
+        getValue() {
+
+            return input.value.trim();
+
+        },
+
+
+        async createCopyCanvas() {
+
+            return await createCanvas(
+                copyScale
+            );
+
+        },
+
+
+        getPrintData() {
+
+            return {
+
+                svgString:
+                    getSvgString(),
+
+                width:
+                    originalWidth *
+                    printScale,
+
+                height:
+                    originalHeight *
+                    printScale
+
+            };
+
+        }
+
+    };
+
+
+    barcodeControllers.push(
+        controller
+    );
+
+
+    return module;
+
+}
+
+
+/* =========================================================
+   인쇄창 공통
+========================================================= */
+
+function openPrintWindow(
+    items
+) {
+
+    const iframe =
+        document.createElement(
+            "iframe"
+        );
+
+
+    iframe.style.position =
+        "fixed";
+
+
+    iframe.style.width =
+        "0";
+
+
+    iframe.style.height =
+        "0";
+
+
+    iframe.style.border =
+        "0";
+
+
+    document.body.appendChild(
+        iframe
+    );
+
+
+    const printWindow =
+        iframe.contentWindow;
+
+
+    const doc =
+        printWindow.document;
+
+
+    const barcodeHtml =
+        items.map(
+            item => `
+
+<div
+    class="print-barcode"
+    style="
+        width:${item.width}px;
+        height:${item.height}px;
+    "
+>
+
+${item.svgString}
+
+</div>
+
+`
+        ).join("");
+
+
+    doc.open();
+
+
+    doc.write(`
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Barcode Print</title>
+
+<style>
+
+@page {
+
+    margin: 10mm;
+
+}
+
+html,
+body {
+
+    margin: 0;
+
+    padding: 0;
+
+}
+
+body {
+
+    padding: 10mm 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 8mm;
+
+}
+
+.print-barcode {
+
+    flex-shrink: 0;
+
+    page-break-inside: avoid;
+
+}
+
+.print-barcode svg {
+
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+${barcodeHtml}
+
+</body>
+
+</html>
+
+    `);
+
+
+    doc.close();
+
+
+    setTimeout(
+        function () {
+
+            printWindow.focus();
+
+            printWindow.print();
+
+        },
+        250
+    );
+
+
+    printWindow.onafterprint =
+        function () {
+
+            iframe.remove();
+
+        };
+
+}
+
+
+/* =========================================================
+   전체 이미지 복사
+========================================================= */
+
+copyAllButton.addEventListener(
+    "click",
+    async function () {
+
+        const active =
+            getActiveControllers();
+
+
+        if (
+            active.length === 0
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            globalStatus.textContent =
+                `${active.length}개 바코드 이미지 생성 중...`;
+
+
+            /*
+               값 있는 것들만 Canvas 생성
+            */
+
+            const canvases =
+                [];
+
+
+            for (
+                const controller
+                of active
+            ) {
+
+                canvases.push(
+
+                    await controller
+                        .createCopyCanvas()
+
+                );
+
+            }
+
+
+            /*
+               합본 이미지 여백
+            */
+
+            const sidePadding =
+                30;
+
+
+            const topPadding =
+                30;
+
+
+            const bottomPadding =
+                30;
+
+
+            const gap =
+                25;
+
+
+            /*
+               가장 넓은 바코드 기준
+            */
+
+            const maxWidth =
+                Math.max(
+                    ...canvases.map(
+                        canvas =>
+                            canvas.width
+                    )
+                );
+
+
+            const totalHeight =
+
+                topPadding +
+
+                canvases.reduce(
+                    (
+                        sum,
+                        canvas
+                    ) =>
+                        sum +
+                        canvas.height,
+                    0
+                ) +
+
+                gap *
+                (
+                    canvases.length -
+                    1
+                ) +
+
+                bottomPadding;
+
+
+            const output =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            output.width =
+                maxWidth +
+                sidePadding * 2;
+
+
+            output.height =
+                totalHeight;
+
+
+            const ctx =
+                output.getContext(
+                    "2d"
+                );
+
+
+            ctx.fillStyle =
+                "white";
+
+
+            ctx.fillRect(
+                0,
+                0,
+                output.width,
+                output.height
+            );
+
+
+            /*
+               가운데 정렬해서 세로 배치
+            */
+
+            let y =
+                topPadding;
+
+
+            for (
+                const canvas
+                of canvases
+            ) {
+
+                const x =
+                    Math.round(
+                        (
+                            output.width -
+                            canvas.width
+                        ) / 2
+                    );
+
+
+                ctx.drawImage(
+                    canvas,
+                    x,
+                    y
+                );
+
+
+                y +=
+                    canvas.height +
+                    gap;
+
+            }
+
+
+            const pngBlob =
+                await new Promise(
+                    resolve => {
+
+                        output.toBlob(
+                            resolve,
+                            "image/png"
+                        );
+
+                    }
+                );
+
+
+            await navigator
+                .clipboard
+                .write([
+
+                    new ClipboardItem({
+
+                        "image/png":
+                            pngBlob
+
+                    })
+
+                ]);
+
+
+            globalStatus.textContent =
+                `${active.length}개 바코드 전체 이미지 복사 완료`;
+
+
+        }
+
+        catch (err) {
+
+            console.error(
+                err
+            );
+
+
+            globalStatus.textContent =
+                "전체 이미지 복사에 실패했습니다.";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   전체 인쇄
+========================================================= */
+
+printAllButton.addEventListener(
+    "click",
+    function () {
+
+        const active =
+            getActiveControllers();
+
+
+        if (
+            active.length === 0
+        ) {
+
+            return;
+
+        }
+
+
+        const items =
+            active.map(
+                controller =>
+                    controller
+                        .getPrintData()
+            );
+
+
+        globalStatus.textContent =
+            `${active.length}개 바코드 인쇄 실행`;
+
+
+        openPrintWindow(
+            items
+        );
+
+    }
+);
+
+
+/* =========================================================
+   5개 생성
+========================================================= */
+
+const modulesContainer =
+    document.getElementById(
+        "modules"
+    );
+
+
+for (
+    let i = 1;
+    i <= 5;
+    i++
+) {
+
+    modulesContainer.appendChild(
+
+        createBarcodeModule(i)
+
+    );
+
+}
+
+
+updateGlobalButtons();
+
+
+document
+    .querySelector(
+        ".barcode-input"
+    )
+    .focus();
+
+</script>
+
+</body>
+</html>
