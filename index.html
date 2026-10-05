@@ -53,6 +53,85 @@ h1 {
     min-width: 130px;
 }
 
+/* =========================================
+   전체 설정
+========================================= */
+
+.global-settings {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 18px;
+
+    background: white;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    padding: 12px 16px;
+
+    margin-bottom: 10px;
+}
+
+
+.global-scale-box {
+
+    min-width: 0;
+}
+
+
+.global-scale-title {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 4px;
+
+    font-size: 13px;
+}
+
+
+.global-scale-title strong {
+
+    font-size: 14px;
+}
+
+
+.global-scale-box input[type="range"] {
+
+    width: 100%;
+
+    margin: 0;
+
+    cursor: pointer;
+}
+
+
+.global-range-labels {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #999;
+
+    font-size: 9px;
+
+    margin-top: 1px;
+}
+
+
+.reset-button {
+
+    border-color: #c4c4c4;
+}
 
 /* =========================================
    바코드 모듈
@@ -247,25 +326,105 @@ button:disabled {
 
     <div class="top-area">
 
-        <h1>Code128 바코드 생성기</h1>
+    <h1>Code128 바코드 생성기</h1>
 
-        <div class="global-buttons">
+    <div class="global-buttons">
 
-            <button
-                id="copyAllButton"
-                disabled>
-                전체 이미지 복사
-            </button>
+        <button
+            id="resetAllButton"
+            class="reset-button">
+            전체 입력 초기화
+        </button>
 
-            <button
-                id="printAllButton"
-                disabled>
-                전체 인쇄
-            </button>
+        <button
+            id="copyAllButton"
+            disabled>
+            전체 이미지 복사
+        </button>
+
+        <button
+            id="printAllButton"
+            disabled>
+            전체 인쇄
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- 전체 크기 설정 -->
+
+<div class="global-settings">
+
+    <div class="global-scale-box">
+
+        <div class="global-scale-title">
+
+            <span>
+                전체 인쇄 크기
+            </span>
+
+            <strong id="globalPrintValue">
+                100%
+            </strong>
 
         </div>
 
+        <input
+            id="globalPrintSlider"
+            type="range"
+            min="10"
+            max="150"
+            step="5"
+            value="100"
+        >
+
+        <div class="global-range-labels">
+            <span>10%</span>
+            <span>100%</span>
+            <span>150%</span>
+        </div>
+
     </div>
+
+
+    <div class="global-scale-box">
+
+        <div class="global-scale-title">
+
+            <span>
+                전체 이미지 복사 크기
+            </span>
+
+            <strong id="globalCopyValue">
+                100%
+            </strong>
+
+        </div>
+
+        <input
+            id="globalCopySlider"
+            type="range"
+            min="10"
+            max="150"
+            step="5"
+            value="100"
+        >
+
+        <div class="global-range-labels">
+            <span>10%</span>
+            <span>100%</span>
+            <span>150%</span>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="globalStatus"></div>
+
+<div id="modules"></div>
 
     <div id="globalStatus"></div>
 
@@ -575,6 +734,31 @@ function normalizeBarcodeText(text) {
 ========================================================= */
 
 const barcodeControllers = [];
+
+const globalPrintSlider =
+    document.getElementById(
+        "globalPrintSlider"
+    );
+
+const globalCopySlider =
+    document.getElementById(
+        "globalCopySlider"
+    );
+
+const globalPrintValue =
+    document.getElementById(
+        "globalPrintValue"
+    );
+
+const globalCopyValue =
+    document.getElementById(
+        "globalCopyValue"
+    );
+
+const resetAllButton =
+    document.getElementById(
+        "resetAllButton"
+    );
 
 
 const copyAllButton =
@@ -897,6 +1081,115 @@ function createBarcodeModule(number) {
 
     }
 
+/* =========================================================
+   전체 인쇄 크기
+========================================================= */
+
+globalPrintSlider.addEventListener(
+    "input",
+    function () {
+
+        const percent =
+            Number(
+                globalPrintSlider.value
+            );
+
+
+        globalPrintValue.textContent =
+            percent + "%";
+
+
+        for (
+            const controller
+            of barcodeControllers
+        ) {
+
+            controller
+                .setPrintScale(
+                    percent
+                );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   전체 이미지 복사 크기
+========================================================= */
+
+globalCopySlider.addEventListener(
+    "input",
+    function () {
+
+        const percent =
+            Number(
+                globalCopySlider.value
+            );
+
+
+        globalCopyValue.textContent =
+            percent + "%";
+
+
+        for (
+            const controller
+            of barcodeControllers
+        ) {
+
+            controller
+                .setCopyScale(
+                    percent
+                );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   전체 입력 초기화
+========================================================= */
+
+resetAllButton.addEventListener(
+    "click",
+    function () {
+
+        for (
+            const controller
+            of barcodeControllers
+        ) {
+
+            controller
+                .resetInput();
+
+        }
+
+
+        globalStatus.textContent =
+            "모든 바코드 입력값이 초기화되었습니다.";
+
+
+        /*
+           첫 번째 입력창으로 커서 이동
+        */
+
+        const firstInput =
+            document.querySelector(
+                ".barcode-input"
+            );
+
+
+        if (firstInput) {
+
+            firstInput.focus();
+
+        }
+
+    }
+);
 
     /* =====================================================
        바코드 생성
@@ -1613,53 +1906,115 @@ function createBarcodeModule(number) {
 
     const controller = {
 
-        hasValue() {
+    hasValue() {
 
-            return (
-                input.value
-                    .trim()
-                    .length > 0
-            );
+        return (
+            input.value
+                .trim()
+                .length > 0
+        );
 
-        },
-
-
-        getValue() {
-
-            return input.value.trim();
-
-        },
+    },
 
 
-        async createCopyCanvas() {
+    getValue() {
 
-            return await createCanvas(
-                copyScale
-            );
+        return input.value.trim();
 
-        },
+    },
 
 
-        getPrintData() {
+    /*
+       전체 인쇄크기에서 호출
+    */
 
-            return {
+    setPrintScale(percent) {
 
-                svgString:
-                    getSvgString(),
+        printScale =
+            percent / 100;
 
-                width:
-                    originalWidth *
-                    printScale,
 
-                height:
-                    originalHeight *
-                    printScale
+        printSlider.value =
+            percent;
 
-            };
 
-        }
+        printScaleValue.textContent =
+            percent + "%";
 
-    };
+
+        applyPreviewScale();
+
+    },
+
+
+    /*
+       전체 이미지복사 크기에서 호출
+    */
+
+    setCopyScale(percent) {
+
+        copyScale =
+            percent / 100;
+
+
+        copySlider.value =
+            percent;
+
+
+        copyScaleValue.textContent =
+            percent + "%";
+
+    },
+
+
+    /*
+       입력창 초기화
+    */
+
+    resetInput() {
+
+        input.value =
+            "";
+
+
+        status.textContent =
+            "";
+
+
+        renderFromCurrentInput();
+
+    },
+
+
+    async createCopyCanvas() {
+
+        return await createCanvas(
+            copyScale
+        );
+
+    },
+
+
+    getPrintData() {
+
+        return {
+
+            svgString:
+                getSvgString(),
+
+            width:
+                originalWidth *
+                printScale,
+
+            height:
+                originalHeight *
+                printScale
+
+        };
+
+    }
+
+};
 
 
     barcodeControllers.push(
