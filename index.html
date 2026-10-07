@@ -316,6 +316,168 @@ button:disabled {
     color: #555;
 }
 
+/* =========================================================
+   모바일 반응형
+========================================================= */
+
+@media (max-width: 700px) {
+
+    body {
+        background: #f3f3f3;
+    }
+
+    .container {
+        width: 100%;
+        max-width: none;
+        margin: 10px 0 30px;
+        padding: 0 10px;
+    }
+
+
+    /* 상단 제목 + 전체버튼 */
+
+    .top-area {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    h1 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .global-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px;
+        width: 100%;
+    }
+
+    .global-buttons button {
+        min-width: 0;
+        padding: 9px 4px;
+        font-size: 12px;
+    }
+
+
+    /* 전체 크기 설정 */
+
+    .global-settings {
+        grid-template-columns: 1fr;
+        gap: 10px;
+
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+
+    /* 각 바코드 모듈 */
+
+    .barcode-module {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+
+    .module-number {
+        font-size: 14px;
+    }
+
+
+    /* 입력창 */
+
+    .barcode-input {
+        height: 44px;
+        font-size: 17px;
+    }
+
+
+    /*
+       핵심:
+       PC의 좌우 배치를
+       모바일에서는 위아래 배치
+    */
+
+    .module-body {
+        display: flex;
+        flex-direction: column;
+
+        gap: 10px;
+
+        margin-top: 8px;
+    }
+
+
+    /* 바코드 영역 */
+
+    .preview {
+        width: 100%;
+        min-height: 120px;
+
+        padding: 8px 0;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+
+    /*
+       SVG가 화면보다 너무 커지더라도
+       영역을 박살내지 않게 함
+    */
+
+    .preview svg {
+        max-width: 100%;
+    }
+
+
+    /* 버튼/슬라이더 영역 */
+
+    .control-panel {
+        width: 100%;
+    }
+
+    .buttons {
+        width: 100%;
+        gap: 6px;
+    }
+
+    .buttons button {
+        padding: 10px 5px;
+        font-size: 14px;
+    }
+
+
+    /* 슬라이더 */
+
+    .scale-group {
+        margin-top: 8px;
+        padding-top: 8px;
+    }
+
+    .scale-title {
+        font-size: 13px;
+    }
+
+    .scale-value {
+        font-size: 14px;
+    }
+
+
+    /* 슬라이더 손잡기 편하게 */
+
+    .size-slider,
+    .global-scale-box input[type="range"] {
+        height: 28px;
+    }
+
+
+    .range-labels,
+    .global-range-labels {
+        font-size: 10px;
+    }
+
+}
+
 </style>
 </head>
 
