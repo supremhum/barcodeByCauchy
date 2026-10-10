@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,10 @@
 <title>Code128 바-코시 생성기</title>
 
 <style>
+
+/* =========================================================
+   기본
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -22,13 +27,19 @@ body {
 .container {
     width: 940px;
     max-width: calc(100% - 20px);
-    margin: 20px auto 40px;
+    margin: 20px auto 70px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
 }
 
 
-/* =========================================
+/* =========================================================
    상단
-========================================= */
+========================================================= */
 
 .top-area {
     display: flex;
@@ -36,12 +47,6 @@ body {
     align-items: center;
     gap: 15px;
     margin-bottom: 14px;
-}
-
-h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 500;
 }
 
 .global-buttons {
@@ -53,184 +58,22 @@ h1 {
     min-width: 130px;
 }
 
-/* =========================================
-   전체 설정
-========================================= */
 
-.global-settings {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 18px;
-
-    background: white;
-
-    border: 1px solid #ccc;
-
-    border-radius: 5px;
-
-    padding: 12px 16px;
-
-    margin-bottom: 10px;
-}
-
-
-.global-scale-box {
-
-    min-width: 0;
-}
-
-
-.global-scale-title {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    margin-bottom: 4px;
-
-    font-size: 13px;
-}
-
-
-.global-scale-title strong {
-
-    font-size: 14px;
-}
-
-
-.global-scale-box input[type="range"] {
-
-    width: 100%;
-
-    margin: 0;
-
-    cursor: pointer;
-}
-
-
-.global-range-labels {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    color: #999;
-
-    font-size: 9px;
-
-    margin-top: 1px;
-}
-
-
-.reset-button {
-
-    border-color: #c4c4c4;
-}
-
-/* =========================================
-   바코드 모듈
-========================================= */
-
-.barcode-module {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-}
-
-.module-number {
-    margin-bottom: 6px;
-    font-size: 13px;
-    font-weight: bold;
-    color: #666;
-}
-
-.barcode-input {
-    width: 100%;
-    height: 40px;
-    padding: 0 12px;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    font-size: 17px;
-    outline: none;
-}
-
-.barcode-input:focus {
-    border-color: #666;
-}
-
-.module-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    gap: 18px;
-    align-items: center;
-    margin-top: 8px;
-}
-
-
-/* =========================================
-   미리보기
-========================================= */
-
-.preview {
-    min-height: 125px;
-    padding: 8px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    overflow: auto;
-}
-
-.preview svg {
-    display: block;
-    background: white;
-    flex-shrink: 0;
-}
-
-.empty {
-    color: #aaa;
-    font-size: 13px;
-}
-
-.error {
-    color: #c62828;
-    font-size: 13px;
-}
-
-
-/* =========================================
-   컨트롤
-========================================= */
-
-.control-panel {
-    width: 100%;
-}
-
-.buttons {
-    display: flex;
-    gap: 6px;
-}
+/* =========================================================
+   공통 버튼
+========================================================= */
 
 button {
-    flex: 1;
     min-width: 0;
-
-    padding: 8px 8px;
+    padding: 8px 10px;
 
     border: 1px solid #aaa;
     border-radius: 4px;
 
     background: white;
+    color: #333;
 
+    font-family: inherit;
     font-size: 13px;
 
     cursor: pointer;
@@ -250,13 +93,177 @@ button:disabled {
 }
 
 
-/* =========================================
-   슬라이더
-========================================= */
+/* =========================================================
+   전체 설정
+========================================================= */
+
+.global-settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+
+    background: white;
+
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    padding: 12px 16px;
+    margin-bottom: 10px;
+}
+
+.global-scale-box {
+    min-width: 0;
+}
+
+.global-scale-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 4px;
+
+    font-size: 13px;
+}
+
+.global-scale-title strong {
+    font-size: 14px;
+}
+
+.global-scale-box input[type="range"] {
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.global-range-labels {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 1px;
+
+    color: #999;
+    font-size: 9px;
+}
+
+#globalStatus {
+    min-height: 18px;
+    margin-bottom: 8px;
+
+    text-align: right;
+
+    font-size: 12px;
+    color: #555;
+}
+
+
+/* =========================================================
+   바코드 모듈
+========================================================= */
+
+.barcode-module {
+    background: white;
+
+    border: 1px solid #ddd;
+    border-radius: 5px;
+
+    padding: 14px 16px;
+    margin-bottom: 10px;
+}
+
+.module-number {
+    margin-bottom: 6px;
+
+    font-size: 13px;
+    font-weight: bold;
+    color: #666;
+}
+
+.barcode-input {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 12px;
+
+    border: 1px solid #bbb;
+    border-radius: 4px;
+
+    font-family: inherit;
+    font-size: 17px;
+
+    outline: none;
+}
+
+.barcode-input:focus {
+    border-color: #666;
+}
+
+.module-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 18px;
+
+    align-items: center;
+
+    margin-top: 8px;
+}
+
+
+/* =========================================================
+   바코드 미리보기
+========================================================= */
+
+.preview {
+    min-height: 125px;
+
+    padding: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: auto;
+}
+
+.preview svg {
+    display: block;
+
+    background: white;
+
+    flex-shrink: 0;
+}
+
+.empty {
+    color: #aaa;
+    font-size: 13px;
+}
+
+.error {
+    color: #c62828;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   개별 컨트롤
+========================================================= */
+
+.control-panel {
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.buttons button {
+    flex: 1;
+}
 
 .scale-group {
     margin-top: 10px;
     padding-top: 8px;
+
     border-top: 1px solid #eee;
 }
 
@@ -278,14 +285,13 @@ button:disabled {
 .size-slider {
     width: 100%;
     margin: 0;
+
     cursor: pointer;
 }
 
 .range-labels {
     display: flex;
     justify-content: space-between;
-
-    margin-top: 0;
 
     color: #999;
     font-size: 9px;
@@ -302,99 +308,233 @@ button:disabled {
 }
 
 
-/* =========================================
-   전체 작업 상태
-========================================= */
+/* =========================================================
+   문의 버튼
+========================================================= */
 
-#globalStatus {
-    min-height: 18px;
-    margin-bottom: 8px;
+.feedback-floating-button {
+    position: fixed;
 
-    text-align: right;
+    right: 22px;
+    bottom: 22px;
 
-    font-size: 12px;
-    color: #555;
+    z-index: 900;
+
+    padding: 11px 17px;
+
+    border: 1px solid #777;
+    border-radius: 24px;
+
+    background: white;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 3px 14px
+        rgba(0, 0, 0, 0.17);
 }
 
+
 /* =========================================================
-   모바일 반응형
+   문의 모달
+========================================================= */
+
+.feedback-modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.feedback-modal.open {
+    display: flex;
+}
+
+.feedback-modal-box {
+    position: relative;
+
+    width: 520px;
+    max-width: 100%;
+
+    background: white;
+
+    border-radius: 9px;
+
+    padding: 24px;
+
+    box-shadow:
+        0 10px 35px
+        rgba(0, 0, 0, 0.28);
+}
+
+.feedback-modal-box h2 {
+    margin: 0 35px 8px 0;
+
+    font-size: 20px;
+}
+
+.feedback-description {
+    margin: 0 0 16px;
+
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.feedback-close-button {
+    position: absolute;
+
+    top: 8px;
+    right: 10px;
+
+    min-width: 34px;
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+
+    font-size: 27px;
+    line-height: 1;
+}
+
+#feedbackText {
+    width: 100%;
+    min-height: 180px;
+
+    padding: 12px;
+
+    border: 1px solid #bbb;
+    border-radius: 5px;
+
+    resize: vertical;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+}
+
+#feedbackText:focus {
+    border-color: #666;
+}
+
+.feedback-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-top: 12px;
+}
+
+.feedback-actions button {
+    min-width: 90px;
+}
+
+.feedback-submit-button {
+    font-weight: 600;
+}
+
+.feedback-status {
+    min-height: 20px;
+
+    margin-top: 10px;
+
+    text-align: center;
+
+    font-size: 13px;
+}
+
+.feedback-status.success {
+    color: #1b7f36;
+}
+
+.feedback-status.error {
+    color: #b3261e;
+}
+
+
+/* =========================================================
+   모바일
 ========================================================= */
 
 @media (max-width: 700px) {
 
-    body {
-        background: #f3f3f3;
-    }
-
     .container {
         width: 100%;
         max-width: none;
-        margin: 10px 0 30px;
+
+        margin: 10px 0 70px;
         padding: 0 10px;
     }
 
-
-    /* 상단 제목 + 전체버튼 */
-
     .top-area {
         display: block;
+
         margin-bottom: 10px;
     }
 
     h1 {
-        font-size: 22px;
         margin-bottom: 10px;
+
+        font-size: 22px;
     }
 
     .global-buttons {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
+
         gap: 5px;
+
         width: 100%;
     }
 
     .global-buttons button {
         min-width: 0;
+
         padding: 9px 4px;
-        font-size: 12px;
+
+        font-size: 11px;
     }
-
-
-    /* 전체 크기 설정 */
 
     .global-settings {
         grid-template-columns: 1fr;
+
         gap: 10px;
 
         padding: 12px;
-        margin-bottom: 10px;
     }
-
-
-    /* 각 바코드 모듈 */
 
     .barcode-module {
         padding: 12px;
-        margin-bottom: 10px;
     }
 
     .module-number {
         font-size: 14px;
     }
 
-
-    /* 입력창 */
-
     .barcode-input {
         height: 44px;
+
         font-size: 17px;
     }
 
-
     /*
-       핵심:
-       PC의 좌우 배치를
-       모바일에서는 위아래 배치
+        PC: 바코드 | 설정
+        모바일: 위아래
     */
 
     .module-body {
@@ -402,12 +542,7 @@ button:disabled {
         flex-direction: column;
 
         gap: 10px;
-
-        margin-top: 8px;
     }
-
-
-    /* 바코드 영역 */
 
     .preview {
         width: 100%;
@@ -419,18 +554,14 @@ button:disabled {
         overflow-y: hidden;
     }
 
-
     /*
-       SVG가 화면보다 너무 커지더라도
-       영역을 박살내지 않게 함
+        모바일에서 바코드가 영역을
+        밀어내지 않도록 제한
     */
 
     .preview svg {
         max-width: 100%;
     }
-
-
-    /* 버튼/슬라이더 영역 */
 
     .control-panel {
         width: 100%;
@@ -438,16 +569,13 @@ button:disabled {
 
     .buttons {
         width: 100%;
-        gap: 6px;
     }
 
     .buttons button {
         padding: 10px 5px;
+
         font-size: 14px;
     }
-
-
-    /* 슬라이더 */
 
     .scale-group {
         margin-top: 8px;
@@ -462,18 +590,37 @@ button:disabled {
         font-size: 14px;
     }
 
-
-    /* 슬라이더 손잡기 편하게 */
-
     .size-slider,
     .global-scale-box input[type="range"] {
         height: 28px;
     }
 
-
     .range-labels,
     .global-range-labels {
         font-size: 10px;
+    }
+
+    .feedback-floating-button {
+        right: 12px;
+        bottom: 15px;
+
+        padding: 10px 13px;
+
+        font-size: 12px;
+    }
+
+    .feedback-modal {
+        padding: 12px;
+    }
+
+    .feedback-modal-box {
+        width: 100%;
+
+        padding: 20px 16px;
+    }
+
+    #feedbackText {
+        min-height: 210px;
     }
 
 }
@@ -484,115 +631,260 @@ button:disabled {
 
 <body>
 
+
 <div class="container">
+
+
+    <!-- =====================================================
+         상단
+    ====================================================== -->
 
     <div class="top-area">
 
-    <h1>Code128 바-코시 생성기</h1>
-
-    <div class="global-buttons">
-
-        <button
-            id="resetAllButton"
-            class="reset-button">
-            전체 입력 초기화
-        </button>
-
-        <button
-            id="copyAllButton"
-            disabled>
-            전체 이미지 복사
-        </button>
-
-        <button
-            id="printAllButton"
-            disabled>
-            전체 인쇄
-        </button>
-
-    </div>
-
-</div>
+        <h1>Code128 바-코시 생성기</h1>
 
 
-<!-- 전체 크기 설정 -->
+        <div class="global-buttons">
 
-<div class="global-settings">
+            <button
+                id="resetAllButton"
+                class="reset-button">
 
-    <div class="global-scale-box">
+                전체 입력 초기화
 
-        <div class="global-scale-title">
+            </button>
 
-            <span>
-                전체 -인쇄 크기- 조절바
-            </span>
 
-            <strong id="globalPrintValue">
-                100%
-            </strong>
+            <button
+                id="copyAllButton"
+                disabled>
 
-        </div>
+                전체 이미지 복사
 
-        <input
-            id="globalPrintSlider"
-            type="range"
-            min="10"
-            max="150"
-            step="5"
-            value="100"
-        >
+            </button>
 
-        <div class="global-range-labels">
-            <span>10%</span>
-            <span>100%</span>
-            <span>150%</span>
+
+            <button
+                id="printAllButton"
+                disabled>
+
+                전체 인쇄
+
+            </button>
+
         </div>
 
     </div>
 
 
-    <div class="global-scale-box">
+    <!-- =====================================================
+         전체 크기 설정
+    ====================================================== -->
 
-        <div class="global-scale-title">
+    <div class="global-settings">
 
-            <span>
-                전체 -이미지 복사 크기- 조절바
-            </span>
 
-            <strong id="globalCopyValue">
-                100%
-            </strong>
+        <div class="global-scale-box">
+
+            <div class="global-scale-title">
+
+                <span>
+                    전체 -인쇄 크기- 조절바
+                </span>
+
+                <strong id="globalPrintValue">
+                    100%
+                </strong>
+
+            </div>
+
+
+            <input
+                id="globalPrintSlider"
+                type="range"
+                min="10"
+                max="150"
+                step="5"
+                value="100"
+            >
+
+
+            <div class="global-range-labels">
+
+                <span>10%</span>
+
+                <span>100%</span>
+
+                <span>150%</span>
+
+            </div>
 
         </div>
 
-        <input
-            id="globalCopySlider"
-            type="range"
-            min="10"
-            max="150"
-            step="5"
-            value="100"
-        >
 
-        <div class="global-range-labels">
-            <span>10%</span>
-            <span>100%</span>
-            <span>150%</span>
+
+        <div class="global-scale-box">
+
+            <div class="global-scale-title">
+
+                <span>
+                    전체 -이미지 복사 크기- 조절바
+                </span>
+
+                <strong id="globalCopyValue">
+                    100%
+                </strong>
+
+            </div>
+
+
+            <input
+                id="globalCopySlider"
+                type="range"
+                min="10"
+                max="150"
+                step="5"
+                value="100"
+            >
+
+
+            <div class="global-range-labels">
+
+                <span>10%</span>
+
+                <span>100%</span>
+
+                <span>150%</span>
+
+            </div>
+
         </div>
+
 
     </div>
 
-</div>
-
-<div id="globalStatus"></div>
-
-<div id="modules"></div>
 
     <div id="globalStatus"></div>
 
+
+    <!-- 바코드 5개가 JS로 생성됨 -->
     <div id="modules"></div>
 
+
 </div>
+
+
+
+<!-- =========================================================
+     문의 / 질문 / 요청 / 건의 버튼
+========================================================= -->
+
+<button
+    id="feedbackOpenButton"
+    class="feedback-floating-button"
+    type="button">
+
+    문의 / 질문 / 요청 / 건의
+
+</button>
+
+
+
+<!-- =========================================================
+     문의 모달
+========================================================= -->
+
+<div
+    id="feedbackModal"
+    class="feedback-modal">
+
+
+    <div class="feedback-modal-box">
+
+
+        <button
+            id="feedbackCloseButton"
+            class="feedback-close-button"
+            type="button">
+
+            ×
+
+        </button>
+
+
+        <h2>
+            문의 / 질문 / 요청 / 건의
+        </h2>
+
+
+        <p class="feedback-description">
+            바코드 생성기와 관련된 오류, 질문, 기능 요청,
+            개선 의견 등을 자유롭게 남겨주세요.
+        </p>
+
+
+        <form
+            id="feedbackForm"
+            action="https://docs.google.com/forms/d/e/1FAIpQLSeWlTrWC9RpbWdcJyzxSqHllQ52TCE3sexOSrKSGwbdBARtLg/formResponse"
+            method="POST"
+            target="feedbackTarget">
+
+
+            <textarea
+                id="feedbackText"
+                name="entry.873240000"
+                placeholder="내용을 입력해주세요."
+                required>
+            </textarea>
+
+
+            <div class="feedback-actions">
+
+
+                <button
+                    type="button"
+                    id="feedbackCancelButton">
+
+                    취소
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="feedbackSubmitButton"
+                    class="feedback-submit-button">
+
+                    보내기
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+        <div
+            id="feedbackStatus"
+            class="feedback-status">
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- Google Forms 응답용 숨은 iframe -->
+<iframe
+    name="feedbackTarget"
+    id="feedbackTarget"
+    style="display:none;">
+</iframe>
+
 
 
 <script>
@@ -603,30 +895,30 @@ button:disabled {
 
 const CODE128_PATTERNS = [
 
-"212222","222122","222221","121223","121322","131222",
-"122213","122312","132212","221213","221312","231212",
-"112232","122132","122231","113222","123122","123221",
-"223211","221132","221231","213212","223112","312131",
-"311222","321122","321221","312212","322112","322211",
-"212123","212321","232121","111323","131123","131321",
-"112313","132113","132311","211313","231113","231311",
-"112133","112331","132131","113123","113321","133121",
-"313121","211331","231131","213113","213311","213131",
-"311123","311321","331121","312113","312311","332111",
-"314111","221411","431111","111224","111422","121124",
-"121421","141122","141221","112214","112412","122114",
-"122411","142112","142211","241211","221114","413111",
-"241112","134111","111242","121142","121241","114212",
-"124112","124211","411212","421112","421211","212141",
-"214121","412121","111143","111341","131141","114113",
-"114311","411113","411311","113141","114131","311141",
-"411131","211412","211214","211232","2331112"
+    "212222","222122","222221","121223","121322","131222",
+    "122213","122312","132212","221213","221312","231212",
+    "112232","122132","122231","113222","123122","123221",
+    "223211","221132","221231","213212","223112","312131",
+    "311222","321122","321221","312212","322112","322211",
+    "212123","212321","232121","111323","131123","131321",
+    "112313","132113","132311","211313","231113","231311",
+    "112133","112331","132131","113123","113321","133121",
+    "313121","211331","231131","213113","213311","213131",
+    "311123","311321","331121","312113","312311","332111",
+    "314111","221411","431111","111224","111422","121124",
+    "121421","141122","141221","112214","112412","122114",
+    "122411","142112","142211","241211","221114","413111",
+    "241112","134111","111242","121142","121241","114212",
+    "124112","124211","411212","421112","421211","212141",
+    "214121","412121","111143","111341","131141","114113",
+    "114311","411113","411311","113141","114131","311141",
+    "411131","211412","211214","211232","2331112"
 
 ];
 
 
 /* =========================================================
-   Code128-B
+   Code128-B 인코딩
 ========================================================= */
 
 function encodeCode128B(text) {
@@ -698,27 +990,36 @@ function encodeCode128B(text) {
 
 
 /* =========================================================
-   한글 오입력 -> 영문
+   한글 오입력 -> 영문 키 변환
 ========================================================= */
 
 const CHO_KEYS = [
+
     "r","R","s","e","E","f","a","q","Q",
     "t","T","d","w","W","c","z","x","v","g"
+
 ];
 
+
 const JUNG_KEYS = [
+
     "k","o","i","O","j","p","u","P",
     "h","hk","ho","hl","y",
     "n","nj","np","nl","b","m","ml","l"
+
 ];
 
+
 const JONG_KEYS = [
+
     "",
     "r","R","rt","s","sw","sg","e",
     "f","fr","fa","fq","ft","fx","fv","fg",
     "a","q","qt","t","T","d","w","c",
     "z","x","v","g"
+
 ];
+
 
 const JAMO_KEYS = {
 
@@ -798,6 +1099,10 @@ function koreanToEnglishKeys(char) {
         char.charCodeAt(0);
 
 
+    /*
+        완성형 한글
+    */
+
     if (
         code >= 0xAC00 &&
         code <= 0xD7A3
@@ -836,6 +1141,10 @@ function koreanToEnglishKeys(char) {
     }
 
 
+    /*
+        ㄱ / ㅏ / ㄳ 등
+    */
+
     if (
         Object.prototype
             .hasOwnProperty
@@ -855,12 +1164,21 @@ function koreanToEnglishKeys(char) {
 }
 
 
+/* =========================================================
+   입력 자동 정리
+========================================================= */
+
 function normalizeBarcodeText(text) {
 
     let result = "";
 
 
     for (const char of text) {
+
+
+        /*
+            영문 소문자 -> 대문자
+        */
 
         if (
             /[a-zA-Z]/.test(char)
@@ -873,6 +1191,10 @@ function normalizeBarcodeText(text) {
 
         }
 
+
+        /*
+            한글 오입력 -> 영문키
+        */
 
         const converted =
             koreanToEnglishKeys(
@@ -892,30 +1214,35 @@ function normalizeBarcodeText(text) {
 
 
 /* =========================================================
-   전체 모듈 컨트롤러 저장
+   전역 DOM
 ========================================================= */
 
 const barcodeControllers = [];
+
 
 const globalPrintSlider =
     document.getElementById(
         "globalPrintSlider"
     );
 
+
 const globalCopySlider =
     document.getElementById(
         "globalCopySlider"
     );
+
 
 const globalPrintValue =
     document.getElementById(
         "globalPrintValue"
     );
 
+
 const globalCopyValue =
     document.getElementById(
         "globalCopyValue"
     );
+
 
 const resetAllButton =
     document.getElementById(
@@ -941,6 +1268,10 @@ const globalStatus =
     );
 
 
+/* =========================================================
+   값 있는 모듈만
+========================================================= */
+
 function getActiveControllers() {
 
     return barcodeControllers.filter(
@@ -950,6 +1281,10 @@ function getActiveControllers() {
 
 }
 
+
+/* =========================================================
+   전체 버튼 상태
+========================================================= */
 
 function updateGlobalButtons() {
 
@@ -976,10 +1311,11 @@ function updateGlobalButtons() {
 
 
 /* =========================================================
-   모듈 생성
+   바코드 모듈 생성
 ========================================================= */
 
 function createBarcodeModule(number) {
+
 
     const module =
         document.createElement(
@@ -996,6 +1332,7 @@ function createBarcodeModule(number) {
         <div class="module-number">
             바코드 ${number}
         </div>
+
 
         <input
             class="barcode-input"
@@ -1014,10 +1351,12 @@ function createBarcodeModule(number) {
                     바코드 값을 입력하세요.
                 </div>
 
+
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     style="display:none">
                 </svg>
+
 
                 <div
                     class="error"
@@ -1032,22 +1371,30 @@ function createBarcodeModule(number) {
 
                 <div class="buttons">
 
+
                     <button
                         class="copy-button"
                         disabled>
+
                         이미지 복사
+
                     </button>
+
 
                     <button
                         class="print-button"
                         disabled>
+
                         바로 인쇄
+
                     </button>
+
 
                 </div>
 
 
                 <div class="scale-group">
+
 
                     <div class="scale-title">
 
@@ -1057,7 +1404,9 @@ function createBarcodeModule(number) {
 
                         <span
                             class="print-scale-value scale-value">
+
                             100%
+
                         </span>
 
                     </div>
@@ -1083,10 +1432,12 @@ function createBarcodeModule(number) {
 
                     </div>
 
+
                 </div>
 
 
                 <div class="scale-group">
+
 
                     <div class="scale-title">
 
@@ -1096,7 +1447,9 @@ function createBarcodeModule(number) {
 
                         <span
                             class="copy-scale-value scale-value">
+
                             100%
+
                         </span>
 
                     </div>
@@ -1122,17 +1475,24 @@ function createBarcodeModule(number) {
 
                     </div>
 
+
                 </div>
 
 
                 <div class="status"></div>
 
+
             </div>
+
 
         </div>
 
     `;
 
+
+    /* =====================================================
+       모듈 DOM
+    ===================================================== */
 
     const input =
         module.querySelector(
@@ -1200,6 +1560,10 @@ function createBarcodeModule(number) {
         );
 
 
+    /* =====================================================
+       상태
+    ===================================================== */
+
     let printScale = 1;
 
     let copyScale = 1;
@@ -1217,6 +1581,7 @@ function createBarcodeModule(number) {
     ===================================================== */
 
     function applyPreviewScale() {
+
 
         if (
             originalWidth === 0 ||
@@ -1243,123 +1608,16 @@ function createBarcodeModule(number) {
 
     }
 
-/* =========================================================
-   전체 인쇄 크기
-========================================================= */
-
-globalPrintSlider.addEventListener(
-    "input",
-    function () {
-
-        const percent =
-            Number(
-                globalPrintSlider.value
-            );
-
-
-        globalPrintValue.textContent =
-            percent + "%";
-
-
-        for (
-            const controller
-            of barcodeControllers
-        ) {
-
-            controller
-                .setPrintScale(
-                    percent
-                );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   전체 이미지 복사 크기
-========================================================= */
-
-globalCopySlider.addEventListener(
-    "input",
-    function () {
-
-        const percent =
-            Number(
-                globalCopySlider.value
-            );
-
-
-        globalCopyValue.textContent =
-            percent + "%";
-
-
-        for (
-            const controller
-            of barcodeControllers
-        ) {
-
-            controller
-                .setCopyScale(
-                    percent
-                );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   전체 입력 초기화
-========================================================= */
-
-resetAllButton.addEventListener(
-    "click",
-    function () {
-
-        for (
-            const controller
-            of barcodeControllers
-        ) {
-
-            controller
-                .resetInput();
-
-        }
-
-
-        globalStatus.textContent =
-            "모든 바코드 입력값이 초기화되었습니다.";
-
-
-        /*
-           첫 번째 입력창으로 커서 이동
-        */
-
-        const firstInput =
-            document.querySelector(
-                ".barcode-input"
-            );
-
-
-        if (firstInput) {
-
-            firstInput.focus();
-
-        }
-
-    }
-);
 
     /* =====================================================
-       바코드 생성
+       바코드 그리기
     ===================================================== */
 
     function drawBarcode(text) {
 
-        svg.innerHTML = "";
+
+        svg.innerHTML =
+            "";
 
 
         const values =
@@ -1368,13 +1626,20 @@ resetAllButton.addEventListener(
             );
 
 
-        const moduleWidth = 2;
+        const moduleWidth =
+            2;
 
-        const barHeight = 100;
 
-        const textAreaHeight = 38;
+        const barHeight =
+            100;
 
-        const quietZone = 10;
+
+        const textAreaHeight =
+            38;
+
+
+        const quietZone =
+            10;
 
 
         let x =
@@ -1386,13 +1651,20 @@ resetAllButton.addEventListener(
             "http://www.w3.org/2000/svg";
 
 
+        /*
+            막대
+        */
+
         for (
             const value
             of values
         ) {
 
+
             const pattern =
-                CODE128_PATTERNS[value];
+                CODE128_PATTERNS[
+                    value
+                ];
 
 
             let isBar =
@@ -1404,6 +1676,7 @@ resetAllButton.addEventListener(
                 of pattern
             ) {
 
+
                 const width =
                     parseInt(
                         widthChar
@@ -1412,6 +1685,7 @@ resetAllButton.addEventListener(
 
 
                 if (isBar) {
+
 
                     const rect =
                         document.createElementNS(
@@ -1457,7 +1731,9 @@ resetAllButton.addEventListener(
                 }
 
 
-                x += width;
+                x +=
+                    width;
+
 
                 isBar =
                     !isBar;
@@ -1471,6 +1747,10 @@ resetAllButton.addEventListener(
             quietZone *
             moduleWidth;
 
+
+        /*
+            아래 문자열
+        */
 
         const textElement =
             document.createElementNS(
@@ -1550,6 +1830,7 @@ resetAllButton.addEventListener(
 
     function getSvgString() {
 
+
         const clone =
             svg.cloneNode(
                 true
@@ -1594,12 +1875,13 @@ resetAllButton.addEventListener(
 
 
     /* =====================================================
-       이미지 Canvas
+       PNG Canvas 생성
     ===================================================== */
 
     async function createCanvas(
         scale = copyScale
     ) {
+
 
         const svgString =
             getSvgString();
@@ -1631,14 +1913,18 @@ resetAllButton.addEventListener(
                 reject
             ) => {
 
+
                 img.onload =
                     resolve;
+
 
                 img.onerror =
                     reject;
 
+
                 img.src =
                     url;
+
 
             }
         );
@@ -1655,7 +1941,7 @@ resetAllButton.addEventListener(
 
 
         /*
-           복사 품질 확보용
+            선명도 확보용
         */
 
         const resolutionScale =
@@ -1726,10 +2012,11 @@ resetAllButton.addEventListener(
 
 
     /* =====================================================
-       입력 렌더
+       현재 입력 렌더
     ===================================================== */
 
     function renderFromCurrentInput() {
+
 
         const value =
             input.value.trim();
@@ -1746,6 +2033,7 @@ resetAllButton.addEventListener(
         if (
             value.length === 0
         ) {
+
 
             svg.style.display =
                 "none";
@@ -1765,12 +2053,14 @@ resetAllButton.addEventListener(
 
             updateGlobalButtons();
 
+
             return;
 
         }
 
 
         try {
+
 
             drawBarcode(
                 value
@@ -1797,6 +2087,7 @@ resetAllButton.addEventListener(
 
         catch (err) {
 
+
             svg.style.display =
                 "none";
 
@@ -1820,6 +2111,7 @@ resetAllButton.addEventListener(
             printButton.disabled =
                 true;
 
+
         }
 
 
@@ -1828,7 +2120,12 @@ resetAllButton.addEventListener(
     }
 
 
+    /* =====================================================
+       입력 자동 보정
+    ===================================================== */
+
     function normalizeAndUpdate() {
+
 
         const normalized =
             normalizeBarcodeText(
@@ -1841,8 +2138,10 @@ resetAllButton.addEventListener(
             normalized
         ) {
 
+
             input.value =
                 normalized;
+
 
         }
 
@@ -1881,6 +2180,7 @@ resetAllButton.addEventListener(
         "input",
         function (event) {
 
+
             if (
                 isComposing ||
                 event.isComposing
@@ -1898,12 +2198,13 @@ resetAllButton.addEventListener(
 
 
     /* =====================================================
-       인쇄 크기
+       개별 인쇄 크기
     ===================================================== */
 
     printSlider.addEventListener(
         "input",
         function () {
+
 
             const percent =
                 Number(
@@ -1912,11 +2213,13 @@ resetAllButton.addEventListener(
 
 
             printScale =
-                percent / 100;
+                percent /
+                100;
 
 
             printScaleValue.textContent =
-                percent + "%";
+                percent +
+                "%";
 
 
             applyPreviewScale();
@@ -1926,12 +2229,13 @@ resetAllButton.addEventListener(
 
 
     /* =====================================================
-       이미지 크기
+       개별 이미지 크기
     ===================================================== */
 
     copySlider.addEventListener(
         "input",
         function () {
+
 
             const percent =
                 Number(
@@ -1940,11 +2244,13 @@ resetAllButton.addEventListener(
 
 
             copyScale =
-                percent / 100;
+                percent /
+                100;
 
 
             copyScaleValue.textContent =
-                percent + "%";
+                percent +
+                "%";
 
         }
     );
@@ -1958,7 +2264,9 @@ resetAllButton.addEventListener(
         "click",
         async function () {
 
+
             try {
+
 
                 status.textContent =
                     "이미지 복사 중...";
@@ -1972,10 +2280,12 @@ resetAllButton.addEventListener(
                     await new Promise(
                         resolve => {
 
+
                             canvas.toBlob(
                                 resolve,
                                 "image/png"
                             );
+
 
                         }
                     );
@@ -1985,12 +2295,16 @@ resetAllButton.addEventListener(
                     .clipboard
                     .write([
 
+
                         new ClipboardItem({
+
 
                             "image/png":
                                 pngBlob
 
+
                         })
+
 
                     ]);
 
@@ -2003,15 +2317,18 @@ resetAllButton.addEventListener(
 
             catch (err) {
 
+
                 console.error(
                     err
                 );
 
 
                 status.textContent =
-                    "이미지 복사가 차단되었습니다.";
+                    "이미지 복사에 실패했습니다.";
+
 
             }
+
 
         }
     );
@@ -2025,158 +2342,164 @@ resetAllButton.addEventListener(
         "click",
         function () {
 
-            printSingle();
+
+            const svgString =
+                getSvgString();
+
+
+            openPrintWindow([
+
+
+                {
+
+                    svgString,
+
+                    width:
+                        originalWidth *
+                        printScale,
+
+                    height:
+                        originalHeight *
+                        printScale
+
+                }
+
+
+            ]);
+
 
         }
     );
 
 
-    function printSingle() {
-
-        const svgString =
-            getSvgString();
-
-
-        const printWidth =
-            originalWidth *
-            printScale;
-
-
-        const printHeight =
-            originalHeight *
-            printScale;
-
-
-        openPrintWindow([
-
-            {
-                svgString,
-                width:
-                    printWidth,
-                height:
-                    printHeight
-            }
-
-        ]);
-
-    }
-
-
     /* =====================================================
-       외부에서 사용할 API
+       외부용 controller
     ===================================================== */
 
     const controller = {
 
-    hasValue() {
 
-        return (
-            input.value
-                .trim()
-                .length > 0
-        );
-
-    },
+        hasValue() {
 
 
-    getValue() {
-
-        return input.value.trim();
-
-    },
-
-
-    /*
-       전체 인쇄크기에서 호출
-    */
-
-    setPrintScale(percent) {
-
-        printScale =
-            percent / 100;
+            return (
+                input.value
+                    .trim()
+                    .length >
+                0
+            );
 
 
-        printSlider.value =
-            percent;
+        },
 
 
-        printScaleValue.textContent =
-            percent + "%";
+        getValue() {
 
 
-        applyPreviewScale();
-
-    },
+            return input.value.trim();
 
 
-    /*
-       전체 이미지복사 크기에서 호출
-    */
-
-    setCopyScale(percent) {
-
-        copyScale =
-            percent / 100;
+        },
 
 
-        copySlider.value =
-            percent;
+        setPrintScale(percent) {
 
 
-        copyScaleValue.textContent =
-            percent + "%";
-
-    },
-
-
-    /*
-       입력창 초기화
-    */
-
-    resetInput() {
-
-        input.value =
-            "";
+            printScale =
+                percent /
+                100;
 
 
-        status.textContent =
-            "";
+            printSlider.value =
+                percent;
 
 
-        renderFromCurrentInput();
-
-    },
-
-
-    async createCopyCanvas() {
-
-        return await createCanvas(
-            copyScale
-        );
-
-    },
+            printScaleValue.textContent =
+                percent +
+                "%";
 
 
-    getPrintData() {
+            applyPreviewScale();
 
-        return {
 
-            svgString:
-                getSvgString(),
+        },
 
-            width:
-                originalWidth *
-                printScale,
 
-            height:
-                originalHeight *
-                printScale
+        setCopyScale(percent) {
 
-        };
 
-    }
+            copyScale =
+                percent /
+                100;
 
-};
+
+            copySlider.value =
+                percent;
+
+
+            copyScaleValue.textContent =
+                percent +
+                "%";
+
+
+        },
+
+
+        resetInput() {
+
+
+            input.value =
+                "";
+
+
+            status.textContent =
+                "";
+
+
+            renderFromCurrentInput();
+
+
+        },
+
+
+        async createCopyCanvas() {
+
+
+            return await createCanvas(
+                copyScale
+            );
+
+
+        },
+
+
+        getPrintData() {
+
+
+            return {
+
+
+                svgString:
+                    getSvgString(),
+
+
+                width:
+                    originalWidth *
+                    printScale,
+
+
+                height:
+                    originalHeight *
+                    printScale
+
+
+            };
+
+
+        }
+
+
+    };
 
 
     barcodeControllers.push(
@@ -2190,12 +2513,11 @@ resetAllButton.addEventListener(
 
 
 /* =========================================================
-   인쇄창 공통
+   인쇄창
 ========================================================= */
 
-function openPrintWindow(
-    items
-) {
+function openPrintWindow(items) {
+
 
     const iframe =
         document.createElement(
@@ -2236,20 +2558,21 @@ function openPrintWindow(
         items.map(
             item => `
 
-<div
-    class="print-barcode"
-    style="
-        width:${item.width}px;
-        height:${item.height}px;
-    "
->
+                <div
+                    class="print-barcode"
+                    style="
+                        width:${item.width}px;
+                        height:${item.height}px;
+                    "
+                >
 
-${item.svgString}
+                    ${item.svgString}
 
-</div>
+                </div>
 
-`
-        ).join("");
+            `
+        )
+        .join("");
 
 
     doc.open();
@@ -2257,77 +2580,63 @@ ${item.svgString}
 
     doc.write(`
 
-<!DOCTYPE html>
+        <!DOCTYPE html>
 
-<html>
+        <html>
 
-<head>
+        <head>
 
-<meta charset="UTF-8">
+            <meta charset="UTF-8">
 
-<title>Barcode Print</title>
+            <title>Barcode Print</title>
 
-<style>
+            <style>
 
-@page {
+                @page {
+                    margin: 10mm;
+                }
 
-    margin: 10mm;
+                html,
+                body {
+                    margin: 0;
+                    padding: 0;
+                }
 
-}
+                body {
+                    padding: 10mm 0;
 
-html,
-body {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
 
-    margin: 0;
+                    gap: 8mm;
+                }
 
-    padding: 0;
+                .print-barcode {
+                    flex-shrink: 0;
 
-}
+                    page-break-inside: avoid;
+                }
 
-body {
+                .print-barcode svg {
+                    display: block;
 
-    padding: 10mm 0;
+                    width: 100%;
+                    height: 100%;
+                }
 
-    display: flex;
+            </style>
 
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 8mm;
-
-}
-
-.print-barcode {
-
-    flex-shrink: 0;
-
-    page-break-inside: avoid;
-
-}
-
-.print-barcode svg {
-
-    display: block;
-
-    width: 100%;
-
-    height: 100%;
-
-}
-
-</style>
-
-</head>
+        </head>
 
 
-<body>
+        <body>
 
-${barcodeHtml}
+            ${barcodeHtml}
 
-</body>
+        </body>
 
-</html>
+        </html>
 
     `);
 
@@ -2338,9 +2647,11 @@ ${barcodeHtml}
     setTimeout(
         function () {
 
+
             printWindow.focus();
 
             printWindow.print();
+
 
         },
         250
@@ -2350,11 +2661,161 @@ ${barcodeHtml}
     printWindow.onafterprint =
         function () {
 
+
             iframe.remove();
+
 
         };
 
 }
+
+
+/* =========================================================
+   바코드 5개 생성
+========================================================= */
+
+const modulesContainer =
+    document.getElementById(
+        "modules"
+    );
+
+
+for (
+    let i = 1;
+    i <= 5;
+    i++
+) {
+
+
+    modulesContainer.appendChild(
+
+        createBarcodeModule(i)
+
+    );
+
+
+}
+
+
+/* =========================================================
+   전체 인쇄 크기
+========================================================= */
+
+globalPrintSlider.addEventListener(
+    "input",
+    function () {
+
+
+        const percent =
+            Number(
+                globalPrintSlider.value
+            );
+
+
+        globalPrintValue.textContent =
+            percent +
+            "%";
+
+
+        for (
+            const controller
+            of barcodeControllers
+        ) {
+
+
+            controller
+                .setPrintScale(
+                    percent
+                );
+
+
+        }
+
+
+    }
+);
+
+
+/* =========================================================
+   전체 이미지 크기
+========================================================= */
+
+globalCopySlider.addEventListener(
+    "input",
+    function () {
+
+
+        const percent =
+            Number(
+                globalCopySlider.value
+            );
+
+
+        globalCopyValue.textContent =
+            percent +
+            "%";
+
+
+        for (
+            const controller
+            of barcodeControllers
+        ) {
+
+
+            controller
+                .setCopyScale(
+                    percent
+                );
+
+
+        }
+
+
+    }
+);
+
+
+/* =========================================================
+   전체 입력 초기화
+========================================================= */
+
+resetAllButton.addEventListener(
+    "click",
+    function () {
+
+
+        for (
+            const controller
+            of barcodeControllers
+        ) {
+
+
+            controller
+                .resetInput();
+
+
+        }
+
+
+        globalStatus.textContent =
+            "모든 바코드 입력값이 초기화되었습니다.";
+
+
+        const firstInput =
+            document.querySelector(
+                ".barcode-input"
+            );
+
+
+        if (firstInput) {
+
+            firstInput.focus();
+
+        }
+
+
+    }
+);
 
 
 /* =========================================================
@@ -2365,12 +2826,14 @@ copyAllButton.addEventListener(
     "click",
     async function () {
 
+
         const active =
             getActiveControllers();
 
 
         if (
-            active.length === 0
+            active.length ===
+            0
         ) {
 
             return;
@@ -2380,13 +2843,10 @@ copyAllButton.addEventListener(
 
         try {
 
+
             globalStatus.textContent =
                 `${active.length}개 바코드 이미지 생성 중...`;
 
-
-            /*
-               값 있는 것들만 Canvas 생성
-            */
 
             const canvases =
                 [];
@@ -2397,6 +2857,7 @@ copyAllButton.addEventListener(
                 of active
             ) {
 
+
                 canvases.push(
 
                     await controller
@@ -2404,12 +2865,9 @@ copyAllButton.addEventListener(
 
                 );
 
+
             }
 
-
-            /*
-               합본 이미지 여백
-            */
 
             const sidePadding =
                 30;
@@ -2426,10 +2884,6 @@ copyAllButton.addEventListener(
             const gap =
                 25;
 
-
-            /*
-               가장 넓은 바코드 기준
-            */
 
             const maxWidth =
                 Math.max(
@@ -2471,7 +2925,8 @@ copyAllButton.addEventListener(
 
             output.width =
                 maxWidth +
-                sidePadding * 2;
+                sidePadding *
+                2;
 
 
             output.height =
@@ -2496,10 +2951,6 @@ copyAllButton.addEventListener(
             );
 
 
-            /*
-               가운데 정렬해서 세로 배치
-            */
-
             let y =
                 topPadding;
 
@@ -2509,12 +2960,14 @@ copyAllButton.addEventListener(
                 of canvases
             ) {
 
+
                 const x =
                     Math.round(
                         (
                             output.width -
                             canvas.width
-                        ) / 2
+                        ) /
+                        2
                     );
 
 
@@ -2529,6 +2982,7 @@ copyAllButton.addEventListener(
                     canvas.height +
                     gap;
 
+
             }
 
 
@@ -2536,10 +2990,12 @@ copyAllButton.addEventListener(
                 await new Promise(
                     resolve => {
 
+
                         output.toBlob(
                             resolve,
                             "image/png"
                         );
+
 
                     }
                 );
@@ -2549,12 +3005,16 @@ copyAllButton.addEventListener(
                 .clipboard
                 .write([
 
+
                     new ClipboardItem({
+
 
                         "image/png":
                             pngBlob
 
+
                     })
+
 
                 ]);
 
@@ -2567,6 +3027,7 @@ copyAllButton.addEventListener(
 
         catch (err) {
 
+
             console.error(
                 err
             );
@@ -2575,7 +3036,9 @@ copyAllButton.addEventListener(
             globalStatus.textContent =
                 "전체 이미지 복사에 실패했습니다.";
 
+
         }
+
 
     }
 );
@@ -2589,12 +3052,14 @@ printAllButton.addEventListener(
     "click",
     function () {
 
+
         const active =
             getActiveControllers();
 
 
         if (
-            active.length === 0
+            active.length ===
+            0
         ) {
 
             return;
@@ -2618,45 +3083,328 @@ printAllButton.addEventListener(
             items
         );
 
+
     }
 );
 
 
 /* =========================================================
-   5개 생성
+   문의 모달
 ========================================================= */
 
-const modulesContainer =
+const feedbackOpenButton =
     document.getElementById(
-        "modules"
+        "feedbackOpenButton"
     );
 
 
-for (
-    let i = 1;
-    i <= 5;
-    i++
-) {
-
-    modulesContainer.appendChild(
-
-        createBarcodeModule(i)
-
+const feedbackModal =
+    document.getElementById(
+        "feedbackModal"
     );
+
+
+const feedbackCloseButton =
+    document.getElementById(
+        "feedbackCloseButton"
+    );
+
+
+const feedbackCancelButton =
+    document.getElementById(
+        "feedbackCancelButton"
+    );
+
+
+const feedbackForm =
+    document.getElementById(
+        "feedbackForm"
+    );
+
+
+const feedbackText =
+    document.getElementById(
+        "feedbackText"
+    );
+
+
+const feedbackStatus =
+    document.getElementById(
+        "feedbackStatus"
+    );
+
+
+const feedbackTarget =
+    document.getElementById(
+        "feedbackTarget"
+    );
+
+
+const feedbackSubmitButton =
+    document.getElementById(
+        "feedbackSubmitButton"
+    );
+
+
+let feedbackSubmitted =
+    false;
+
+
+/* =========================================================
+   문의 열기
+========================================================= */
+
+function openFeedbackModal() {
+
+
+    feedbackModal
+        .classList
+        .add(
+            "open"
+        );
+
+
+    feedbackStatus.textContent =
+        "";
+
+
+    feedbackStatus.className =
+        "feedback-status";
+
+
+    setTimeout(
+        function () {
+
+
+            feedbackText.focus();
+
+
+        },
+        50
+    );
+
 
 }
 
 
+/* =========================================================
+   문의 닫기
+========================================================= */
+
+function closeFeedbackModal() {
+
+
+    feedbackModal
+        .classList
+        .remove(
+            "open"
+        );
+
+
+}
+
+
+/* =========================================================
+   문의 버튼 이벤트
+========================================================= */
+
+feedbackOpenButton.addEventListener(
+    "click",
+    openFeedbackModal
+);
+
+
+feedbackCloseButton.addEventListener(
+    "click",
+    closeFeedbackModal
+);
+
+
+feedbackCancelButton.addEventListener(
+    "click",
+    closeFeedbackModal
+);
+
+
+/* =========================================================
+   모달 바깥 클릭 -> 닫기
+========================================================= */
+
+feedbackModal.addEventListener(
+    "click",
+    function (event) {
+
+
+        if (
+            event.target ===
+            feedbackModal
+        ) {
+
+
+            closeFeedbackModal();
+
+
+        }
+
+
+    }
+);
+
+
+/* =========================================================
+   ESC -> 닫기
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+
+            closeFeedbackModal();
+
+
+        }
+
+
+    }
+);
+
+
+/* =========================================================
+   문의 제출
+========================================================= */
+
+feedbackForm.addEventListener(
+    "submit",
+    function () {
+
+
+        const value =
+            feedbackText.value.trim();
+
+
+        if (
+            value.length ===
+            0
+        ) {
+
+            return;
+
+        }
+
+
+        feedbackSubmitted =
+            true;
+
+
+        feedbackSubmitButton.disabled =
+            true;
+
+
+        feedbackStatus.className =
+            "feedback-status";
+
+
+        feedbackStatus.textContent =
+            "전송 중...";
+
+
+    }
+);
+
+
+/* =========================================================
+   Google Forms 응답 완료
+========================================================= */
+
+feedbackTarget.addEventListener(
+    "load",
+    function () {
+
+
+        /*
+            iframe 최초 로드 이벤트 무시
+        */
+
+        if (
+            !feedbackSubmitted
+        ) {
+
+            return;
+
+        }
+
+
+        feedbackSubmitted =
+            false;
+
+
+        feedbackSubmitButton.disabled =
+            false;
+
+
+        feedbackStatus.className =
+            "feedback-status success";
+
+
+        feedbackStatus.textContent =
+            "전송되었습니다. 감사합니다.";
+
+
+        feedbackForm.reset();
+
+
+        setTimeout(
+            function () {
+
+
+                closeFeedbackModal();
+
+
+                feedbackStatus.textContent =
+                    "";
+
+
+                feedbackStatus.className =
+                    "feedback-status";
+
+
+            },
+            1300
+        );
+
+
+    }
+);
+
+
+/* =========================================================
+   초기화
+========================================================= */
+
 updateGlobalButtons();
 
 
-document
-    .querySelector(
+const firstBarcodeInput =
+    document.querySelector(
         ".barcode-input"
-    )
-    .focus();
+    );
+
+
+if (firstBarcodeInput) {
+
+    firstBarcodeInput.focus();
+
+}
 
 </script>
+
 
 </body>
 </html>
